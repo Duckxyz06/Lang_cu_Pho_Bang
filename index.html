@@ -121,6 +121,8 @@ body.walking #footacts{display:flex}body.inquiz #footacts,body.inquiz #joy{displ
  #qcard{padding:12px;max-height:calc(100vh - 110px)}#quiz{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 20px)}.credit{font-size:9px;bottom:calc(env(safe-area-inset-bottom,0px) + 3px);left:8px;text-align:center}
  #welcome .steps{grid-template-columns:1fr}
 }
+/* điện thoại: nền đặc thay cho làm mờ (blur trên khung 3D rất nặng với máy yếu) */
+@media (max-width:760px),(max-height:560px){#qcard,.modal>.glass,#themes,#focusbar{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(14,34,70,.95)}}
 /* ===== Điện thoại XOAY DỌC ===== */
 html,body{height:100dvh;touch-action:manipulation}
 @media (max-width:760px) and (orientation:portrait){
@@ -967,7 +969,8 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
   const nf=mode!=='explore'?null:walk?nearTheme():bd<THREE.MathUtils.degToRad(13)?best:null;
   if(nf!==focusK){focusK=nf;labels.forEach(l=>l.el.classList.toggle('focus',l.k===focusK));$$('#themes button').forEach(b=>b.classList.toggle('on',b.dataset.k===focusK));
    $('#focusbar').hidden=!focusK;if(focusK){$('#fname').innerHTML=`${walk?'Bạn đang ở gần ':''}<b>${THEMES[focusK].name}</b> · ${THEMES[focusK].qs.length} câu hỏi`;sfx.click()}}
- }else{panoBox.position.copy(camera.position);renderer.render(panoScene,camera)}
+ }else{const key=view.yaw.toFixed(4)+','+view.pitch.toFixed(4)+','+view.fov.toFixed(2)+','+(panoBox.material[0]&&panoBox.material[0].id)+','+innerWidth+'x'+innerHeight;
+  if(key!==frame.pk){frame.pk=key;panoBox.position.copy(camera.position);renderer.render(panoScene,camera)}}   // ảnh 360° đứng yên thì không vẽ lại → nhẹ máy
  stepConfetti()}
 $('#fgo').onclick=()=>{if(focusK){initAudio();startTheme(focusK)}};
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
