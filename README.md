@@ -14,7 +14,7 @@ Mô hình 3D và trò chơi đố vui giới thiệu Khu di tích Nguyễn Sinh 
 
 ## Gom dữ liệu từ mọi máy (Google Sheets)
 Trang chạy trên GitHub Pages không có máy chủ, nên mặc định mỗi máy chỉ lưu dữ liệu của chính nó. Để admin xem danh sách máy đạt thưởng từ **tất cả** thiết bị:
-1. Tạo một Google Sheet, mở **Tiện ích mở rộng › Apps Script**, dán nội dung [`backend/google-apps-script.gs`](backend/google-apps-script.gs), đổi `KEY` thành chuỗi bí mật.
+1. Tải [`backend/Ket-qua-Lang-cu-Pho-Bang.xlsx`](backend/Ket-qua-Lang-cu-Pho-Bang.xlsx) lên Google Drive và mở bằng Google Trang tính (sheet mẫu: Times New Roman 14, kẻ ô, có sheet Thống kê tự tính). Mở **Tiện ích mở rộng › Apps Script**, dán nội dung [`backend/google-apps-script.gs`](backend/google-apps-script.gs), đổi `KEY` thành chuỗi bí mật, chạy hàm `caiDat` một lần.
 2. **Triển khai › Tùy chọn triển khai mới › Ứng dụng web** (Thực thi: Tôi · Truy cập: Bất kỳ ai), sao chép URL `…/exec`.
 3. Dán URL vào dòng `const SYNC_URL=''` trong `index.html` (để mọi máy cùng gửi), rồi trong ⚙ Quản lý nhập `KEY` và bấm **Tải dữ liệu mọi máy**.
 
