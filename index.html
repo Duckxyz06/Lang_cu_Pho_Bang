@@ -887,7 +887,7 @@ $('#fsb').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():
    Chơi xong (đã trả lời) chủ đề nào thì chủ đề đó bị khóa với email đó. */
 /* ---------- QUẢN TRỊ: admindthu@gmail.com ----------
    Gom dữ liệu mọi máy: dán đường dẫn Web App của Google Apps Script vào SYNC_URL (hoặc nhập trong bảng Quản trị). */
-const SYNC_URL='';
+const SYNC_URL='https://script.google.com/macros/s/AKfycbxSdvw6Cwbdja2RE0190lW7tnLpcsfdXkkcfkQ7hkho3otDv231rOQpMyAghUHnck9G/exec';
 const ADMIN='admindthu@gmail.com';let ADMIN_OK=false;try{ADMIN_OK=sessionStorage.getItem('lcpb3d.adm')==='1'}catch(e){}
 const devName=()=>{const u=navigator.userAgent,os=/Android/.test(u)?'Android':/iPhone|iPad|iPod/.test(u)?'iOS':/Windows/.test(u)?'Windows':/Mac OS/.test(u)?'macOS':/Linux/.test(u)?'Linux':'Khác',
  br=/Edg\//.test(u)?'Edge':/OPR\//.test(u)?'Opera':/CriOS|Chrome\//.test(u)?'Chrome':/FxiOS|Firefox\//.test(u)?'Firefox':/Safari\//.test(u)?'Safari':'Trình duyệt',m=(u.match(/Android [\d.]+; ([^;)]+)/)||[])[1];
