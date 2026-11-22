@@ -129,6 +129,7 @@ body.walking #footacts{display:flex}body.inquiz #footacts,body.inquiz #joy{displ
 body.inquiz #pchip{display:none}
 .hs.done .card{background:rgba(31,164,90,.88);border-color:#bff5d4}.hs.done small{opacity:1}
 #themes button.done{background:rgba(31,164,90,.55)}#themes button.done::after{content:'✔';margin-left:2px;font-weight:800}
+#sdevices table{width:100%;border-collapse:collapse;font-size:12px}#sdevices td,#sdevices th{padding:4px 5px;border-bottom:1px solid rgba(255,255,255,.1);vertical-align:top;text-align:left}#sdevices th{opacity:.7;font-weight:600}#sdevices code{font-size:11px;background:rgba(0,0,0,.25);padding:0 4px;border-radius:4px}
 #splayers table{width:100%;border-collapse:collapse;font-size:12px}#splayers td{padding:3px 5px;border-bottom:1px solid rgba(255,255,255,.1);vertical-align:top}
 @media (max-width:760px),(max-height:560px){#pchip{top:calc(env(safe-area-inset-top,0px) + 44px);right:6px;font-size:11px}#pchip b{max-width:120px}}
 .glass,#qcard,.modal>.glass{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}.glass{background:rgba(14,34,70,.9)}
@@ -227,7 +228,7 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
     <button id="siteb">🏛 Khu di tích</button>
     <button id="aboutb">ℹ Về DThU</button>
     <button id="fsb" title="Toàn màn hình">⛶ Toàn màn hình</button>
-    <button id="staffb" title="Dành cho ban tổ chức">⚙ Quản lý</button>
+    <button id="staffb" title="Quản trị (chỉ tài khoản admin)" hidden>⚙ Quản lý</button>
   </div>
 </div>
 <button id="sndb" title="Bật/tắt âm thanh">🔊</button>
@@ -261,7 +262,8 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
   <form id="wlogin" class="login" autocomplete="on" novalidate>
     <label for="wemail">Đăng nhập bằng email để chơi — mỗi chủ đề chỉ chơi 1 lần</label>
     <div class="lrow"><input id="wemail" type="email" inputmode="email" autocomplete="email" placeholder="ten@gmail.com" maxlength="120"><button id="wgo" class="big primary" type="submit">Bắt đầu ▶</button></div>
-    <div class="note" id="wmsg">Email chỉ dùng để ghi nhận lượt chơi và quà, lưu trên thiết bị này.</div>
+    <div class="lrow" id="wadm" hidden style="margin-top:8px"><input id="wpass" type="password" autocomplete="current-password" placeholder="Mật khẩu quản trị"></div>
+    <div class="note" id="wmsg">Email, mã máy và địa chỉ IP được ghi nhận để xác nhận lượt chơi và trao quà.</div>
   </form>
 </div></div>
 <div id="pchip" class="glass" hidden><span>👤 <b id="pmail"></b></span><span id="pprog"></span><button id="pout" title="Đăng xuất">Đăng xuất</button></div>
@@ -276,6 +278,7 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
     <li>Ảnh 360° chụp thực tế tại điểm đó hiện ra, kèm một câu hỏi rút ngẫu nhiên từ bộ 20 câu của chủ đề.</li>
     <li><b>🚶 Khám phá:</b> điều khiển nhân vật đi tham quan bằng W A S D / phím mũi tên hoặc joystick (điện thoại), Shift hoặc nút Chạy, Space nhảy, C ngồi, bấm nền đất để đi tới đó. Đi tới gần Lăng mộ, Hồ sen (đầu cầu), Nhà sàn hoặc Nghi Môn sẽ hiện nút chọn chủ đề.</li>
     <li>Chọn A, B, C hoặc D. Nếu khó, bấm <b>💡 Gợi ý</b> để bỏ bớt 2 đáp án. Trả lời sai vẫn còn lượt thử câu khác.</li>
+    <li>Tài khoản <b>admindthu@gmail.com</b> (cần mật khẩu) là quản trị: chỉ tài khoản này thấy nút ⚙ Quản lý, xem danh sách máy kèm IP đã nhận thưởng.</li>
     <li><b>Đăng nhập bằng email</b> trước khi chơi. Mỗi email chơi mỗi chủ đề 1 lần: trả lời xong chủ đề nào thì chủ đề đó được khóa (dấu ✔). Bấm <b>Đăng xuất</b> (góc phải trên) để nhường lượt cho khách sau.</li>
     <li>Trả lời đúng: màn hình hiện <b>phần quà và mã nhận quà</b>. Đưa mã cho ban tổ chức để nhận quà.</li>
   </ol>
@@ -308,7 +311,7 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
 </div></div>
 
 <div id="staff" class="modal" hidden><div class="glass"><button class="x" data-close>✕</button>
-  <h2>⚙ Dành cho ban tổ chức</h2>
+  <h2>⚙ Quản trị</h2><div class="note" style="margin-top:-4px">Tài khoản: admindthu@gmail.com</div>
   <div id="slock"><label for="spin">Nhập mã PIN</label><div class="acts" style="margin-top:0"><input id="spin" type="password" inputmode="numeric" autocomplete="off" style="flex:1"><button id="sunlock" class="primary">Mở</button></div><div class="note" id="spinmsg"></div></div>
   <div id="sform" hidden>
     <label for="sgroup">Tên nhóm nghiên cứu (hiện trên màn hình chào và màn hình nhận quà)</label><input id="sgroup" type="text" maxlength="90">
@@ -318,11 +321,17 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
     <div id="sgifts"></div>
     <label>Thống kê trên máy này</label>
     <table id="sstats"></table>
+    <label>Máy đạt phần thưởng — mã máy · IP (<span id="sdn">0</span> máy)</label>
+    <div id="sdevices" style="max-height:260px;overflow:auto"></div>
+    <div class="acts"><button id="sload">⟳ Tải dữ liệu mọi máy (Google Sheets)</button><span class="note" id="sloadmsg"></span></div>
     <label>Người chơi đã đăng nhập trên máy này (<span id="spn">0</span>)</label>
     <div id="splayers" style="max-height:210px;overflow:auto"></div>
     <div class="acts"><button id="scsv">⬇ Xuất danh sách (CSV)</button><button id="sclrp">Xóa dữ liệu người chơi</button></div>
     <div class="acts"><button id="ssave" class="primary big">Lưu</button><button id="sreset">Đặt lại thống kê</button><button id="sreq">Đặt lại vòng câu hỏi</button></div>
-    <div class="note">Dữ liệu lưu trên trình duyệt của máy này. Mã PIN mặc định: 2003.</div>
+    <label for="ssync">Đường dẫn Google Apps Script để gom dữ liệu từ mọi máy (xem README)</label><input id="ssync" type="text" placeholder="https://script.google.com/macros/s/…/exec">
+    <label for="skey">Khóa đọc dữ liệu (trùng KEY trong Apps Script)</label><input id="skey" type="password" autocomplete="off">
+    <label for="spass">Đổi mật khẩu quản trị (để trống nếu giữ nguyên)</label><input id="spass" type="password" autocomplete="new-password">
+    <div class="note">Cài đặt lưu trên trình duyệt của máy này.</div>
   </div>
 </div></div>
 <div id="fade"><span>Đang tải ảnh 360°…</span></div>
@@ -473,9 +482,9 @@ KEYS.forEach(k=>THEMES[k].qs=QUESTIONS[k]);
 const canvas=$('#c3');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:false});
 const TOUCH=matchMedia('(pointer:coarse)').matches;
-let PR=Math.min(devicePixelRatio,TOUCH?1.25:1.5);renderer.setPixelRatio(PR);renderer.setSize(innerWidth,innerHeight);
+let PR=Math.min(devicePixelRatio,TOUCH?1.75:2);   // đồ họa cao: độ phân giải gốc của màn hình (tối đa 2x)renderer.setPixelRatio(PR);renderer.setSize(innerWidth,innerHeight);
 // bóng đổ tĩnh: chỉ tính 1 lần (cảnh không đổi), nhân vật dùng bóng tròn riêng
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.55;
 const scene=new THREE.Scene();
 scene.fog=new THREE.Fog(0xcfe0ea,170,560);
@@ -493,7 +502,7 @@ const pmrem=new THREE.PMREMGenerator(renderer);
 {const s2=new THREE.Scene();const sk2=new Sky();sk2.scale.setScalar(1000);Object.assign(sk2.material.uniforms.sunPosition.value,sun);['turbidity','rayleigh','mieCoefficient','mieDirectionalG'].forEach(k=>sk2.material.uniforms[k].value=su[k].value);s2.add(sk2);scene.environment=pmrem.fromScene(s2).texture;}
 scene.add(new THREE.HemisphereLight(0xe3f1ff,0x5d7f3e,.75));
 const dl=new THREE.DirectionalLight(0xfff0d8,2.4);dl.position.copy(sun).multiplyScalar(120);dl.castShadow=true;
-dl.shadow.mapSize.set(2048,2048);Object.assign(dl.shadow.camera,{left:-85,right:85,top:85,bottom:-85,near:10,far:400});dl.target.position.set(30,0,10);dl.shadow.bias=-.0004;dl.shadow.normalBias=.04;
+dl.shadow.mapSize.set(4096,4096);dl.shadow.radius=3;   // bóng đổ tĩnh tính 1 lần nên dùng bản đồ bóng lớn, viền mềmObject.assign(dl.shadow.camera,{left:-85,right:85,top:85,bottom:-85,near:10,far:400});dl.target.position.set(30,0,10);dl.shadow.bias=-.0004;dl.shadow.normalBias=.04;
 scene.add(dl);scene.add(dl.target);
 
 /* ---------- vật liệu & kết cấu canvas ---------- */
@@ -727,7 +736,7 @@ const congG=grp(...(()=>{const [x,z]=px(1201,389);return [x,0,z]})());
 /* ---------- cây xanh, bụi cây (vị trí theo sơ đồ) ---------- */
 const TREES=[[175,45,46],[255,62,28],[470,112,74],[415,55,48],[548,170,46],[600,38,38],[38,48,30],[36,268,30],[36,372,34],[58,462,30],[38,566,30],[260,282,28],[200,470,34],[168,508,26],[246,512,22],[158,602,34],[150,655,28],[572,592,28],[850,618,28],[968,528,24],[1192,528,24],[1262,40,18],[820,10,20],[700,40,24],[98,330,22],...TREES_E];
 const SHRUBS=[[630,196],[668,190],[705,191],[740,200],[770,212],[805,235],[625,556],[660,598],[690,600],[722,598],[772,578],[802,564],[832,546],[876,546],[740,126],[782,104],[822,140],[852,112],[880,170],[862,202],[822,182],[722,156],[945,286],[1135,286],[318,287],[347,300],[377,322],[373,463],[344,484],[313,502],[160,345],[160,392],[225,580],[262,594],[300,596],[340,598],[380,600],[420,602],[460,600],[500,598],[240,630],[280,640],[320,644],[360,648],[400,650],[440,650],[480,648],[520,644]];
-{const tg=new THREE.CylinderGeometry(.22,.34,1,7);tg.translate(0,.5,0);const bg=new THREE.IcosahedronGeometry(1,2);
+{const tg=new THREE.CylinderGeometry(.22,.34,1,7);tg.translate(0,.5,0);const bg=new THREE.IcosahedronGeometry(1,3);
  const tm=new THREE.InstancedMesh(tg,M(0x6b4a32),TREES.length),bmz=new THREE.InstancedMesh(bg,M(0xffffff,{roughness:.95}),TREES.length*4);
  const o=new THREE.Object3D(),c=new THREE.Color();let k=0;
  TREES.forEach((t,i)=>{const [x,z]=px(t[0],t[1]);const r=t[2]*SC*.95,h=1.4+r*.75;o.position.set(x,0,z);o.rotation.set(0,0,0);o.scale.set(1+r*.08,h,1+r*.08);o.updateMatrix();tm.setMatrixAt(i,o.matrix);
@@ -851,7 +860,7 @@ function showResult(ok,exp){const intro=`<p class="intro">Trò chơi do <b>${esc
    setTimeout(()=>{sfx.gift();confetti()},150)}
   else{h=`<div class="head">🎉 Chính xác!</div><div class="know"><b>Bạn có biết?</b> ${esc(exp)}</div><div class="know" style="text-align:center">Quà tặng đợt này đã được trao hết. Cảm ơn bạn rất nhiều! Mời bạn ghé quầy DThU để giao lưu cùng nhóm nghiên cứu.</div>`;setTimeout(confetti,150)}}
  else h=`<div class="head">💙 Cảm ơn bạn đã tham gia!</div><div class="know"><b>Bạn có biết?</b> ${esc(exp)}</div><div style="opacity:.85">Câu hỏi khó một chút thôi — lần sau bạn chắc chắn trả lời được!</div>`;
- if(ME&&cur){PLAYERS[ME].themes[cur.k]=rec;savePlayers();refreshLocks()}
+ if(ME&&cur){PLAYERS[ME].themes[cur.k]=rec;savePlayers();refreshLocks();recordResult(rec,cur.k)}
  const left=KEYS.filter(k=>!isDone(k));
  const lock=ME?`<div class="note" style="margin:6px 0 0">🔒 Chủ đề “${esc(THEMES[cur.k].name)}” đã được khóa với <b>${esc(ME)}</b> · đã chơi ${4-left.length}/4 chủ đề.</div>`:'';
  const all=left.length?'':'<div class="know" style="text-align:center">🎊 Bạn đã hoàn thành cả 4 chủ đề. Cảm ơn bạn đã đồng hành cùng DThU!</div>';
@@ -876,6 +885,25 @@ $('#fsb').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():
 /* ---------- ĐĂNG NHẬP EMAIL + KHÓA CHỦ ĐỀ ĐÃ CHƠI ----------
    Trang tĩnh (GitHub Pages) không có máy chủ: tiến độ từng email lưu trên trình duyệt của thiết bị này.
    Chơi xong (đã trả lời) chủ đề nào thì chủ đề đó bị khóa với email đó. */
+/* ---------- QUẢN TRỊ: admindthu@gmail.com ----------
+   Gom dữ liệu mọi máy: dán đường dẫn Web App của Google Apps Script vào SYNC_URL (hoặc nhập trong bảng Quản trị). */
+const SYNC_URL='';
+const ADMIN='admindthu@gmail.com';let ADMIN_OK=false;try{ADMIN_OK=sessionStorage.getItem('lcpb3d.adm')==='1'}catch(e){}
+const devName=()=>{const u=navigator.userAgent,os=/Android/.test(u)?'Android':/iPhone|iPad|iPod/.test(u)?'iOS':/Windows/.test(u)?'Windows':/Mac OS/.test(u)?'macOS':/Linux/.test(u)?'Linux':'Khác',
+ br=/Edg\//.test(u)?'Edge':/OPR\//.test(u)?'Opera':/CriOS|Chrome\//.test(u)?'Chrome':/FxiOS|Firefox\//.test(u)?'Firefox':/Safari\//.test(u)?'Safari':'Trình duyệt',m=(u.match(/Android [\d.]+; ([^;)]+)/)||[])[1];
+ return `${m&&!/^K$/.test(m.trim())?m.trim()+' · ':''}${os} · ${br} · ${screen.width}×${screen.height}`};
+let DEV=store.get('device',null);if(!DEV||!DEV.id){DEV={id:(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now().toString(36)).replace(/-/g,'').slice(0,8).toUpperCase(),first:Date.now()}}
+DEV.name=devName();store.set('device',DEV);
+async function getIP(){try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),5000);const j=await (await fetch('https://api.ipify.org?format=json',{signal:c.signal,cache:'no-store'})).json();clearTimeout(tm);if(j&&j.ip){DEV.ip=j.ip;store.set('device',DEV)}}catch(e){}return DEV.ip||''}
+getIP();
+let DEVICES=store.get('devices',{}),REMOTE=null;
+const syncURL=()=>(CFG.sync||SYNC_URL||'').trim();
+async function recordResult(rec,k){const ip=DEV.ip||await getIP();
+ const d=DEVICES[DEV.id]||(DEVICES[DEV.id]={name:DEV.name,first:Date.now(),plays:0,wins:[]});d.name=DEV.name;d.ip=ip;d.last=Date.now();d.plays=(d.plays||0)+1;
+ const row={at:rec.at,email:ME,theme:THEMES[k].name,ok:rec.ok,gift:rec.gift||'',code:rec.code||'',deviceId:DEV.id,deviceName:DEV.name,ip};
+ if(rec.code)d.wins.push(row);store.set('devices',DEVICES);
+ const u=syncURL();if(u){try{await fetch(u,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(row)})}catch(e){console.warn('Không gửi được kết quả lên Google Sheets',e)}}}
+const isAdmin=()=>ME===ADMIN&&ADMIN_OK;
 const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 let PLAYERS=store.get('players',{}),ME=null;
 try{const s=sessionStorage.getItem('lcpb3d.me');if(s&&PLAYERS[s])ME=s}catch(e){}
@@ -883,37 +911,54 @@ const savePlayers=()=>store.set('players',PLAYERS);
 const isDone=k=>!!(ME&&PLAYERS[ME]&&PLAYERS[ME].themes&&PLAYERS[ME].themes[k]);
 const doneCount=()=>KEYS.filter(isDone).length;
 function login(e){ME=e.toLowerCase().trim();if(!PLAYERS[ME])PLAYERS[ME]={t:Date.now(),themes:{}};PLAYERS[ME].last=Date.now();savePlayers();try{sessionStorage.setItem('lcpb3d.me',ME)}catch(x){}refreshLocks()}
-function logout(){ME=null;try{sessionStorage.removeItem('lcpb3d.me')}catch(x){}refreshLocks()}
+function logout(){ME=null;ADMIN_OK=false;try{sessionStorage.removeItem('lcpb3d.adm')}catch(x){}$('#staff').hidden=true;try{sessionStorage.removeItem('lcpb3d.me')}catch(x){}refreshLocks()}
 function refreshLocks(){labels.forEach(l=>l.w=0);frame.ek=null;
- $('#pchip').hidden=!ME;if(ME){$('#pmail').textContent=ME;$('#pprog').textContent=doneCount()+'/4 chủ đề'}
+ $('#staffb').hidden=!isAdmin();$('#pchip').hidden=!ME;if(ME){$('#pmail').textContent=ME;$('#pprog').textContent=doneCount()+'/4 chủ đề'}
  labels.forEach(l=>{if(!l.k)return;const d=isDone(l.k);l.el.classList.toggle('done',d);l.el.querySelector('small').textContent=d?'✔ Đã hoàn thành':`${THEMES[l.k].qs.length} câu hỏi · bấm để chọn`});
  $$('#themes button').forEach(b=>b.classList.toggle('done',isDone(b.dataset.k)));focusK=undefined}
 $('#pout').onclick=()=>{sfx.click();logout();if(walk)setWalk(false);$('#welcome').hidden=false;giftLine()};
 function showLogin(){$('#welcome').hidden=false;giftLine();setTimeout(()=>$('#wemail').focus(),60)}
 const giftLine=()=>{$('#wgifts').innerHTML='Quà tặng: '+CFG.gifts.filter(g=>g.on).map(g=>`<span>${g.icon} ${esc(g.name)}</span>`).join('')};
+const WMSG='Email, mã máy và địa chỉ IP được ghi nhận để xác nhận lượt chơi và trao quà.';
 $('#wlogin').onsubmit=e=>{e.preventDefault();const inp=$('#wemail'),v=inp.value.trim();
  if(!EMAIL_RE.test(v)){inp.classList.add('bad');$('#wmsg').textContent='Email chưa đúng định dạng, ví dụ: ten@gmail.com';inp.focus();return}
- inp.classList.remove('bad');inp.value='';$('#wmsg').textContent='Email chỉ dùng để ghi nhận lượt chơi và quà, lưu trên thiết bị này.';
+ if(v.toLowerCase()===ADMIN){const pw=$('#wpass');
+  if($('#wadm').hidden){$('#wadm').hidden=false;$('#wmsg').textContent='Tài khoản quản trị — nhập mật khẩu để tiếp tục.';pw.focus();return}
+  if(pw.value!==String(CFG.pin||'2003')){pw.classList.add('bad');$('#wmsg').textContent='Mật khẩu quản trị chưa đúng.';pw.focus();return}
+  pw.value='';pw.classList.remove('bad');$('#wadm').hidden=true;ADMIN_OK=true;try{sessionStorage.setItem('lcpb3d.adm','1')}catch(x){}}
+ else ADMIN_OK=false;
+ inp.classList.remove('bad');inp.value='';$('#wmsg').textContent=WMSG;
  initAudio();sfx.click();login(v);$('#welcome').hidden=true;bump();const n=doneCount();
  toast(n>=4?'Bạn đã hoàn thành cả 4 chủ đề rồi. Cảm ơn bạn!':n?`Chào bạn! Bạn đã hoàn thành ${n}/4 chủ đề, mời chọn chủ đề còn lại.`:'Kéo màn hình để nhìn quanh 360° và chọn 1 trong 4 chủ đề',3600)};
-$('#wemail').addEventListener('input',()=>$('#wemail').classList.remove('bad'));
+$('#wemail').addEventListener('input',()=>{$('#wemail').classList.remove('bad');if($('#wemail').value.trim().toLowerCase()!==ADMIN){$('#wadm').hidden=true;$('#wpass').value=''}});
+$('#wpass').addEventListener('input',()=>$('#wpass').classList.remove('bad'));
 // quản lý
-$('#staffb').onclick=()=>{open('staff');$('#slock').hidden=false;$('#sform').hidden=true;$('#spin').value='';$('#spinmsg').textContent='';setTimeout(()=>$('#spin').focus(),50)};
+$('#staffb').onclick=()=>{if(!isAdmin())return;open('staff');$('#slock').hidden=true;$('#sform').hidden=false;fillStaff()};
 const unlock=()=>{if($('#spin').value===String(CFG.pin||'2003')){$('#slock').hidden=true;$('#sform').hidden=false;fillStaff()}else $('#spinmsg').textContent='Mã PIN chưa đúng.'};
 $('#sunlock').onclick=unlock;$('#spin').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
-function fillStaff(){$('#sgroup').value=CFG.group;$('#schance').value=String(CFG.chances);
+function allRows(){const rows=[];Object.entries(DEVICES).forEach(([id,d])=>(d.wins||[]).forEach(w=>rows.push({...w,deviceId:id,deviceName:w.deviceName||d.name})));
+ if(REMOTE)REMOTE.forEach(w=>{if(!rows.some(x=>x.code&&x.code===w.code&&x.deviceId===w.deviceId))rows.push(w)});return rows}
+function fillDevices(){const g={};allRows().filter(w=>w.code).forEach(w=>{const x=g[w.deviceId]||(g[w.deviceId]={name:w.deviceName,ip:new Set(),last:0,wins:[]});if(w.ip)x.ip.add(w.ip);x.last=Math.max(x.last,+new Date(w.at));x.wins.push(w)});
+ const L=Object.entries(g).sort((a,b)=>b[1].last-a[1].last);$('#sdn').textContent=L.length;
+ $('#sdevices').innerHTML=L.length?'<table><tr><th>Máy</th><th>IP</th><th>Phần thưởng</th></tr>'+L.map(([id,x])=>`<tr><td><b>#${esc(id)}</b>${id===DEV.id?' (máy này)':''}<br><span class="note">${esc(x.name||'')}</span></td><td>${[...x.ip].map(esc).join('<br>')||'—'}</td><td>${x.wins.map(w=>`<code>${esc(w.code)}</code> ${esc(w.gift)} · ${esc(w.theme)}<br><span class="note">${esc(w.email)} · ${new Date(w.at).toLocaleString('vi-VN')}</span>`).join('<br>')}</td></tr>`).join('')+'</table>':'<div class="note">Chưa có máy nào nhận thưởng'+(REMOTE?'':' trên máy này — bấm “Tải dữ liệu mọi máy” nếu đã cài Google Sheets')+'.</div>'}
+function fillStaff(){$('#sgroup').value=CFG.group;$('#schance').value=String(CFG.chances);$('#ssync').value=CFG.sync||SYNC_URL;$('#skey').value=CFG.syncKey||'';$('#spass').value='';fillDevices();
  $('#sgifts').innerHTML=CFG.gifts.map((g,i)=>`<div class="grow3"><input type="checkbox" data-i="${i}" class="gon" ${g.on?'checked':''} aria-label="Bật quà"><input type="text" class="gname" data-i="${i}" value="${esc(g.name)}"><input type="number" min="0" class="gstock" data-i="${i}" value="${g.stock}" aria-label="Số lượng"></div>`).join('');
  const rows=Object.entries(PLAYERS).sort((a,b)=>(b[1].last||b[1].t)-(a[1].last||a[1].t));$('#spn').textContent=rows.length;
  $('#splayers').innerHTML=rows.length?'<table>'+rows.map(([e,d])=>`<tr><td>${esc(e)}</td><td>${KEYS.map(k=>{const x=d.themes[k];return x?`${THEMES[k].name}: ${x.ok?'✔':'✘'}${x.code?' '+x.code:''}`:''}).filter(Boolean).join('<br>')||'—'}</td></tr>`).join('')+'</table>':'<div class="note">Chưa có người chơi.</div>';
  $('#sstats').innerHTML=`<tr><td>Lượt chọn chủ đề</td><td>${ST.plays}</td></tr><tr><td>Câu trả lời đúng / sai</td><td>${ST.correct} / ${ST.wrong}</td></tr>`+CFG.gifts.map(g=>`<tr><td>Đã trao: ${esc(g.name)}</td><td>${ST.given[g.id]||0}</td></tr>`).join('')+`<tr><td>Mã nhận quà gần nhất</td><td>${ST.code?'DT-'+String(ST.code).padStart(4,'0'):'—'}</td></tr>`}
-$('#ssave').onclick=()=>{CFG.group=$('#sgroup').value.trim()||DEF.group;CFG.chances=+$('#schance').value;
+$('#ssave').onclick=()=>{CFG.group=$('#sgroup').value.trim()||DEF.group;CFG.chances=+$('#schance').value;CFG.sync=$('#ssync').value.trim();CFG.syncKey=$('#skey').value;const np=$('#spass').value.trim();if(np){if(np.length<4){toast('Mật khẩu cần ít nhất 4 ký tự');return}CFG.pin=np}
  $$('.gon').forEach(c=>CFG.gifts[c.dataset.i].on=c.checked);$$('.gname').forEach(c=>CFG.gifts[c.dataset.i].name=c.value.trim()||CFG.gifts[c.dataset.i].name);$$('.gstock').forEach(c=>CFG.gifts[c.dataset.i].stock=Math.max(0,parseInt(c.value)||0));
  store.set('cfg',CFG);applyGroup();giftLine();fillStaff();toast('Đã lưu cài đặt')};
 $('#sreset').onclick=()=>{if(confirm('Đặt lại toàn bộ thống kê và số mã nhận quà về 0?')){ST={plays:0,correct:0,wrong:0,code:0,given:{}};saveStats();fillStaff()}};
-$('#scsv').onclick=()=>{const L=[['Email','Chủ đề','Kết quả','Quà','Mã nhận quà','Thời gian']];
- Object.entries(PLAYERS).forEach(([e,d])=>KEYS.forEach(k=>{const x=d.themes[k];if(x)L.push([e,THEMES[k].name,x.ok?'Đúng':'Sai',x.gift||'',x.code||'',new Date(x.at).toLocaleString('vi-VN')])}));
+$('#sload').onclick=async()=>{const u=syncURL(),k=CFG.syncKey||$('#skey').value;if(!u){$('#sloadmsg').textContent='Chưa có đường dẫn Google Apps Script.';return}
+ $('#sloadmsg').textContent='Đang tải…';try{const j=await (await fetch(u+(u.includes('?')?'&':'?')+'key='+encodeURIComponent(k),{cache:'no-store'})).json();if(j.error)throw new Error(j.error==='key'?'Sai khóa đọc dữ liệu':j.error);
+  REMOTE=(j.rows||[]).map(r=>({at:r[0],email:r[1],theme:r[2],ok:r[3]==='Đúng',gift:r[4],code:r[5],deviceId:String(r[6]),deviceName:r[7],ip:r[8]}));$('#sloadmsg').textContent=`Đã tải ${REMOTE.length} kết quả.`;fillDevices()}
+ catch(e){$('#sloadmsg').textContent='Không tải được: '+e.message}};
+$('#scsv').onclick=()=>{const L=[['Thời gian','Email','Chủ đề','Kết quả','Quà','Mã nhận quà','Mã máy','Tên máy','IP']];
+ const seen=new Set();allRows().forEach(w=>{seen.add(w.email+'|'+w.theme);L.push([new Date(w.at).toLocaleString('vi-VN'),w.email,w.theme,w.ok?'Đúng':'Sai',w.gift,w.code,w.deviceId,w.deviceName,w.ip])});
+ Object.entries(PLAYERS).forEach(([e,d])=>KEYS.forEach(k=>{const x=d.themes[k];if(x&&!seen.has(e+'|'+THEMES[k].name))L.push([new Date(x.at).toLocaleString('vi-VN'),e,THEMES[k].name,x.ok?'Đúng':'Sai',x.gift||'',x.code||'',DEV.id,DEV.name,DEV.ip||''])}));
  const csv='\ufeff'+L.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='nguoi-choi-lang-cu-pho-bang.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='ket-qua-lang-cu-pho-bang.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
 $('#sclrp').onclick=()=>{if(confirm('Xóa toàn bộ danh sách người chơi và trạng thái khóa chủ đề trên máy này? Không thể hoàn tác.')){PLAYERS={};savePlayers();logout();fillStaff()}};
 $('#sreq').onclick=()=>{KEYS.forEach(k=>store.set('used.'+k,[]));toast('Đã đặt lại vòng câu hỏi')};
 
@@ -1082,7 +1127,7 @@ $('#fgo').onclick=()=>{if(focusK){initAudio();startTheme(focusK)}};
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);labels.forEach(l=>l.w=0);frame.ek=frame.pk=null});
 // máy chậm: tự hạ chất lượng (đo FPS khi đang có chuyển động)
 {let lvl=0,f0=0,t0=performance.now();setInterval(()=>{const now=performance.now(),n=(frame.n||0)-f0,dt=(now-t0)/1000;f0=frame.n||0;t0=now;if(document.hidden||n<20)return;const fps=n/dt;
- if(fps<32&&lvl<3){lvl++;if(lvl===1){PR=1;renderer.setPixelRatio(1);renderer.setSize(innerWidth,innerHeight)}
+ if(fps<26&&lvl<3){lvl++;if(lvl===1){PR=1;renderer.setPixelRatio(1);renderer.setSize(innerWidth,innerHeight)}
   if(lvl===2){PR=.8;renderer.setPixelRatio(.8);renderer.setSize(innerWidth,innerHeight)}
   if(lvl===3){renderer.shadowMap.enabled=false;scene.traverse(o=>{if(o.material)[].concat(o.material).forEach(m=>m.needsUpdate=true)})}
   frame.ek=null;console.info('Hạ chất lượng đồ hoạ cấp',lvl,'FPS',fps.toFixed(0))}},2500)}

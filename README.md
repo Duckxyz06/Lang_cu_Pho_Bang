@@ -10,7 +10,15 @@ Mô hình 3D và trò chơi đố vui giới thiệu Khu di tích Nguyễn Sinh 
 - 4 chủ đề: **Lăng mộ · Ao sen · Nhà sàn · Cổng**, mỗi chủ đề 20 câu hỏi A–B–C–D, nền là ảnh 360° chụp thực tế.
 - Đăng nhập bằng email trước khi chơi; mỗi email chơi mỗi chủ đề 1 lần — trả lời xong chủ đề nào thì chủ đề đó bị khóa (dấu ✔). Dữ liệu lưu trên trình duyệt của thiết bị.
 - Trả lời đúng nhận quà (móc khóa, sổ tay DThU, quà Ban Quản lý) kèm mã nhận quà.
-- Nút **⚙ Quản lý** (PIN mặc định `2003`): tên nhóm nghiên cứu, số lượng quà, số lượt thử, thống kê, danh sách người chơi (xuất CSV).
+- **Quản trị:** chỉ tài khoản `admindthu@gmail.com` (đăng nhập kèm mật khẩu quản trị) thấy nút **⚙ Quản lý**: danh sách các máy đạt phần thưởng kèm mã máy và IP, tên nhóm nghiên cứu, số lượng quà, số lượt thử, thống kê, xuất CSV, đổi mật khẩu.
+
+## Gom dữ liệu từ mọi máy (Google Sheets)
+Trang chạy trên GitHub Pages không có máy chủ, nên mặc định mỗi máy chỉ lưu dữ liệu của chính nó. Để admin xem danh sách máy đạt thưởng từ **tất cả** thiết bị:
+1. Tạo một Google Sheet, mở **Tiện ích mở rộng › Apps Script**, dán nội dung [`backend/google-apps-script.gs`](backend/google-apps-script.gs), đổi `KEY` thành chuỗi bí mật.
+2. **Triển khai › Tùy chọn triển khai mới › Ứng dụng web** (Thực thi: Tôi · Truy cập: Bất kỳ ai), sao chép URL `…/exec`.
+3. Dán URL vào dòng `const SYNC_URL=''` trong `index.html` (để mọi máy cùng gửi), rồi trong ⚙ Quản lý nhập `KEY` và bấm **Tải dữ liệu mọi máy**.
+
+Mỗi kết quả gửi lên gồm: thời gian, email, chủ đề, đúng/sai, quà, mã nhận quà, mã máy, tên máy, IP (IP lấy qua dịch vụ api.ipify.org).
 
 ## Ghi chú
 - `index.html` là trang chính (~160 KB); ảnh 360° (`assets/pano/`) tải khi chọn chủ đề, nhân vật (`assets/nhanvat.glb`) tải nền. Cần Internet để tải thư viện three.js và phông chữ.
