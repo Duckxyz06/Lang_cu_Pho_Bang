@@ -9,7 +9,7 @@
 <style>
 :root{--bg:#0e1b2c;--panel:rgba(14,34,70,.78);--fg:#fff;--accent:#DB2927;--brand:#2356A7;--brand2:#107EC2;--ok:#1fa45a;--bad:#d9433a;--gold:#f2c21a}
 html,body{height:100%;margin:0;background:var(--bg);font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;color:var(--fg);-webkit-tap-highlight-color:transparent}
-canvas{display:block}#c3{position:fixed;inset:0;touch-action:none;cursor:grab}#c3:active{cursor:grabbing}
+canvas{display:block}#c3{position:fixed;inset:0;width:100%!important;height:100%!important;touch-action:none;cursor:grab}#c3:active{cursor:grabbing}
 .glass{background:var(--panel);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.3)}
 button{font:inherit;background:var(--panel);color:var(--fg);border:1px solid rgba(255,255,255,.22);padding:7px 13px;border-radius:999px;font-size:13px;cursor:pointer}
 button:hover,button.on{background:var(--accent);border-color:var(--accent)}
@@ -482,7 +482,7 @@ KEYS.forEach(k=>THEMES[k].qs=QUESTIONS[k]);
 const canvas=$('#c3');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:false});
 const TOUCH=matchMedia('(pointer:coarse)').matches;
-let PR=Math.min(devicePixelRatio,TOUCH?1.75:2);   // đồ họa cao: độ phân giải gốc của màn hình (tối đa 2x)renderer.setPixelRatio(PR);renderer.setSize(innerWidth,innerHeight);
+let PRCAP=TOUCH?1.75:2,PR=Math.min(devicePixelRatio,PRCAP);   // đồ họa cao: độ phân giải gốc của màn hình (tối đa 2x)renderer.setPixelRatio(PR);renderer.setSize(innerWidth,innerHeight);
 // bóng đổ tĩnh: chỉ tính 1 lần (cảnh không đổi), nhân vật dùng bóng tròn riêng
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.55;
@@ -1092,6 +1092,8 @@ function stepWalk(dt){
 /* ---------- vòng lặp ---------- */
 const tmpV=new THREE.Vector3(),fwd=new THREE.Vector3();let last=performance.now();
 function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;
+ // luôn khớp kích thước canvas với cửa sổ (toàn màn hình, xoay máy, thu phóng…) – tránh cảnh chỉ vẽ ở một góc
+ {const W=innerWidth,H=innerHeight;PR=Math.min(devicePixelRatio||1,PRCAP);if(W!==frame.w||H!==frame.h||renderer.getPixelRatio()!==PR){frame.w=W;frame.h=H;camera.aspect=W/H;camera.updateProjectionMatrix();renderer.setPixelRatio(PR);renderer.setSize(W,H);labels.forEach(l=>l.w=0);frame.ek=frame.pk=null}}
  if(anim){const t=Math.min(1,(now-anim.t0)/anim.ms),e=ease(t);view.yaw=anim.y0+anim.dy*e;view.pitch=anim.p0+anim.dp*e;view.fov=anim.f0+anim.df*e;if(t>=1){const r=anim.res;anim=null;r&&r()}}
  else if(!drag){view.yaw+=vel;vel*=.9;if(Math.abs(vel)<1e-5)vel=0}
  const idle=now-lastInput;const anyModal=$('.modal:not([hidden])');
@@ -1104,7 +1106,7 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
  if(mode==='explore'||mode==='busy'&&!cur){
   const mp=me.position;blob.visible=walk;if(walk)blob.position.set(mp.x,(onBridge(mp.x,mp.z)?bridgeY(mp.x):0)+.03,mp.z);
   const ek=[camera.position.x,camera.position.y,camera.position.z,view.yaw,view.pitch,view.fov].map(v=>v.toFixed(3)).join()+innerWidth+'x'+innerHeight+(walk?[mp.x,mp.y,mp.z,me.rotation.y,walkT,JB.sitT,JB.y].map(v=>v.toFixed(3)).join():'');
-  frame.pk=null;if(ek!==frame.ek){frame.ek=ek;frame.n=(frame.n||0)+1;
+  frame.pk=null;if(ek!==frame.ek){frame.ek=ek;frame.n=(frame.n||0)+1;if(frame.lastR&&now-frame.lastR<120){frame.sum=(frame.sum||0)+(now-frame.lastR);frame.cnt=(frame.cnt||0)+1}frame.lastR=now;
   renderer.render(scene,camera);
   camera.getWorldDirection(fwd);let best=null,bd=1e9;
   labels.forEach(l=>{const front=tmpV.copy(l.pos).applyMatrix4(camera.matrixWorldInverse).z<-.5;tmpV.copy(l.pos).project(camera);const vis=front&&Math.abs(tmpV.x)<1.3&&Math.abs(tmpV.y)<1.3;l.el.style.opacity=vis?1:0;l.el.style.pointerEvents=vis&&l.k?'auto':'none';
@@ -1124,13 +1126,13 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
   if(key!==frame.pk){frame.pk=key;panoBox.position.copy(camera.position);renderer.render(panoScene,camera)}}   // ảnh 360° đứng yên thì không vẽ lại → nhẹ máy
  stepConfetti()}
 $('#fgo').onclick=()=>{if(focusK){initAudio();startTheme(focusK)}};
+document.addEventListener('visibilitychange',()=>{frame.ek=frame.pk=null});document.addEventListener('fullscreenchange',()=>{frame.w=0});if(window.visualViewport)visualViewport.addEventListener('resize',()=>{frame.w=0});
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);labels.forEach(l=>l.w=0);frame.ek=frame.pk=null});
 // máy chậm: tự hạ chất lượng (đo FPS khi đang có chuyển động)
-{let lvl=0,f0=0,t0=performance.now();setInterval(()=>{const now=performance.now(),n=(frame.n||0)-f0,dt=(now-t0)/1000;f0=frame.n||0;t0=now;if(document.hidden||n<20)return;const fps=n/dt;
- if(fps<26&&lvl<3){lvl++;if(lvl===1){PR=1;renderer.setPixelRatio(1);renderer.setSize(innerWidth,innerHeight)}
-  if(lvl===2){PR=.8;renderer.setPixelRatio(.8);renderer.setSize(innerWidth,innerHeight)}
+{let lvl=0;setInterval(()=>{const c=frame.cnt||0;if(document.hidden||c<40){return}const fps=1000/(frame.sum/c);frame.sum=frame.cnt=0;
+ if(fps<26&&lvl<3){lvl++;if(lvl===1)PRCAP=1;if(lvl===2)PRCAP=.8;
   if(lvl===3){renderer.shadowMap.enabled=false;scene.traverse(o=>{if(o.material)[].concat(o.material).forEach(m=>m.needsUpdate=true)})}
-  frame.ek=null;console.info('Hạ chất lượng đồ hoạ cấp',lvl,'FPS',fps.toFixed(0))}},2500)}
+  frame.ek=null;console.info('Hạ chất lượng đồ hoạ cấp',lvl,'FPS',fps.toFixed(0))}},3000)}
 document.fonts&&document.fonts.ready.then(()=>{});
 requestAnimationFrame(frame);
 setTimeout(()=>{renderer.shadowMap.needsUpdate=true;frame.ek=null;$('#loader').classList.add('done');giftLine();refreshLocks();if(!ME)$('#welcome').hidden=false},400);
