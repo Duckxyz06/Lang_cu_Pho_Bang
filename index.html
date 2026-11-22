@@ -260,13 +260,13 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
   </div>
   <div class="gifts" id="wgifts"></div>
   <form id="wlogin" class="login" autocomplete="on" novalidate>
-    <label for="wemail">Đăng nhập bằng email để chơi — mỗi chủ đề chỉ chơi 1 lần</label>
-    <div class="lrow"><input id="wemail" type="email" inputmode="email" autocomplete="email" placeholder="ten@gmail.com" maxlength="120"><button id="wgo" class="big primary" type="submit">Bắt đầu ▶</button></div>
-    <div class="lrow" id="wadm" hidden style="margin-top:8px"><input id="wpass" type="password" autocomplete="current-password" placeholder="Mật khẩu quản trị"></div>
-    <div class="note" id="wmsg">Email, mã máy và địa chỉ IP được ghi nhận để xác nhận lượt chơi và trao quà.</div>
+    <div class="acts" style="justify-content:center;margin-top:4px"><button id="wgo" class="big primary" type="submit" style="font-size:18px;padding:12px 34px">Bắt đầu ▶</button></div>
+    <div class="lrow" id="wadm" hidden style="margin-top:10px"><input id="wpass" type="password" autocomplete="current-password" placeholder="Mật khẩu quản trị (admindthu@gmail.com)"></div>
+    <div class="note" id="wmsg" style="text-align:center">Mỗi chủ đề chơi 1 lần. Hệ thống tự ghi nhận lượt chơi (mã máy, IP) để trao quà.</div>
+    <div style="text-align:center;margin-top:4px"><a href="#" id="wadmin" class="note" style="color:#8fc1ff">🔒 Quản trị</a></div>
   </form>
 </div></div>
-<div id="pchip" class="glass" hidden><span>👤 <b id="pmail"></b></span><span id="pprog"></span><button id="pout" title="Đăng xuất">Đăng xuất</button></div>
+<div id="pchip" class="glass" hidden><span>👤 <b id="pmail"></b></span><span id="pprog"></span><button id="pout" title="Kết thúc lượt chơi để nhường cho khách sau">Kết thúc lượt</button></div>
 
 <div id="result" class="modal" hidden><div class="glass" id="rbody"></div></div>
 
@@ -278,8 +278,8 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
     <li>Ảnh 360° chụp thực tế tại điểm đó hiện ra, kèm một câu hỏi rút ngẫu nhiên từ bộ 20 câu của chủ đề.</li>
     <li><b>🚶 Khám phá:</b> điều khiển nhân vật đi tham quan bằng W A S D / phím mũi tên hoặc joystick (điện thoại), Shift hoặc nút Chạy, Space nhảy, C ngồi, bấm nền đất để đi tới đó. Đi tới gần Lăng mộ, Hồ sen (đầu cầu), Nhà sàn hoặc Nghi Môn sẽ hiện nút chọn chủ đề.</li>
     <li>Chọn A, B, C hoặc D. Nếu khó, bấm <b>💡 Gợi ý</b> để bỏ bớt 2 đáp án. Trả lời sai vẫn còn lượt thử câu khác.</li>
-    <li>Tài khoản <b>admindthu@gmail.com</b> (cần mật khẩu) là quản trị: chỉ tài khoản này thấy nút ⚙ Quản lý, xem danh sách máy kèm IP đã nhận thưởng.</li>
-    <li><b>Đăng nhập bằng email</b> trước khi chơi. Mỗi email chơi mỗi chủ đề 1 lần: trả lời xong chủ đề nào thì chủ đề đó được khóa (dấu ✔). Bấm <b>Đăng xuất</b> (góc phải trên) để nhường lượt cho khách sau.</li>
+    <li>Quản trị (<b>admindthu@gmail.com</b>): bấm <b>🔒 Quản trị</b> ở màn chào, nhập mật khẩu; chỉ tài khoản này thấy nút ⚙ Quản lý, xem danh sách máy kèm IP đã nhận thưởng.</li>
+    <li>Bấm <b>Bắt đầu</b> là vào chơi, hệ thống tự tạo lượt chơi và ghi nhận lên Google Sheets. Mỗi lượt chơi mỗi chủ đề 1 lần: trả lời xong chủ đề nào thì chủ đề đó được khóa (dấu ✔). Bấm <b>Kết thúc lượt</b> (góc phải trên) để nhường cho khách sau.</li>
     <li>Trả lời đúng: màn hình hiện <b>phần quà và mã nhận quà</b>. Đưa mã cho ban tổ chức để nhận quà.</li>
   </ol>
   <div class="note">Phím tắt: ← → xoay · Enter chọn chủ đề · 1–4 hoặc A–D trả lời · Esc quay lại.</div>
@@ -906,31 +906,31 @@ async function recordResult(rec,k){const ip=DEV.ip||await getIP();
 const isAdmin=()=>ME===ADMIN&&ADMIN_OK;
 const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 let PLAYERS=store.get('players',{}),ME=null;
-try{const s=sessionStorage.getItem('lcpb3d.me');if(s&&PLAYERS[s])ME=s}catch(e){}
+{const s=store.get('cur',null);if(s&&PLAYERS[s]&&(s!==ADMIN||ADMIN_OK))ME=s}   // lượt chơi đang dở (giữ khi tải lại trang)
 const savePlayers=()=>store.set('players',PLAYERS);
 const isDone=k=>!!(ME&&PLAYERS[ME]&&PLAYERS[ME].themes&&PLAYERS[ME].themes[k]);
 const doneCount=()=>KEYS.filter(isDone).length;
-function login(e){ME=e.toLowerCase().trim();if(!PLAYERS[ME])PLAYERS[ME]={t:Date.now(),themes:{}};PLAYERS[ME].last=Date.now();savePlayers();try{sessionStorage.setItem('lcpb3d.me',ME)}catch(x){}refreshLocks()}
-function logout(){ME=null;ADMIN_OK=false;try{sessionStorage.removeItem('lcpb3d.adm')}catch(x){}$('#staff').hidden=true;try{sessionStorage.removeItem('lcpb3d.me')}catch(x){}refreshLocks()}
+function login(e){ME=e;if(!PLAYERS[ME])PLAYERS[ME]={t:Date.now(),themes:{}};PLAYERS[ME].last=Date.now();savePlayers();store.set('cur',ME);refreshLocks()}
+// mỗi lần bấm Bắt đầu (khi chưa có lượt dở) tạo một lượt chơi mới: Khách #<mã máy>-<số thứ tự>
+function newGuest(){const n=(store.get('guestN',0)||0)+1;store.set('guestN',n);return `Khách #${DEV.id}-${n}`}
+function logout(){ME=null;ADMIN_OK=false;try{sessionStorage.removeItem('lcpb3d.adm')}catch(x){}$('#staff').hidden=true;store.set('cur',null);refreshLocks()}
 function refreshLocks(){labels.forEach(l=>l.w=0);frame.ek=null;
- $('#staffb').hidden=!isAdmin();$('#pchip').hidden=!ME;if(ME){$('#pmail').textContent=ME;$('#pprog').textContent=doneCount()+'/4 chủ đề'}
+ $('#staffb').hidden=!isAdmin();$('#pchip').hidden=!ME;if(ME){$('#pmail').textContent=ME===ADMIN?'Quản trị':ME;$('#pprog').textContent=doneCount()+'/4 chủ đề'}
  labels.forEach(l=>{if(!l.k)return;const d=isDone(l.k);l.el.classList.toggle('done',d);l.el.querySelector('small').textContent=d?'✔ Đã hoàn thành':`${THEMES[l.k].qs.length} câu hỏi · bấm để chọn`});
  $$('#themes button').forEach(b=>b.classList.toggle('done',isDone(b.dataset.k)));focusK=undefined}
 $('#pout').onclick=()=>{sfx.click();logout();if(walk)setWalk(false);$('#welcome').hidden=false;giftLine()};
-function showLogin(){$('#welcome').hidden=false;giftLine();setTimeout(()=>$('#wemail').focus(),60)}
+function showLogin(){$('#welcome').hidden=false;giftLine();$('#wadm').hidden=true;$('#wpass').value='';setTimeout(()=>$('#wgo').focus(),60)}
 const giftLine=()=>{$('#wgifts').innerHTML='Quà tặng: '+CFG.gifts.filter(g=>g.on).map(g=>`<span>${g.icon} ${esc(g.name)}</span>`).join('')};
-const WMSG='Email, mã máy và địa chỉ IP được ghi nhận để xác nhận lượt chơi và trao quà.';
-$('#wlogin').onsubmit=e=>{e.preventDefault();const inp=$('#wemail'),v=inp.value.trim();
- if(!EMAIL_RE.test(v)){inp.classList.add('bad');$('#wmsg').textContent='Email chưa đúng định dạng, ví dụ: ten@gmail.com';inp.focus();return}
- if(v.toLowerCase()===ADMIN){const pw=$('#wpass');
-  if($('#wadm').hidden){$('#wadm').hidden=false;$('#wmsg').textContent='Tài khoản quản trị — nhập mật khẩu để tiếp tục.';pw.focus();return}
+const WMSG='Mỗi chủ đề chơi 1 lần. Hệ thống tự ghi nhận lượt chơi (mã máy, IP) để trao quà.';
+$('#wadmin').onclick=e=>{e.preventDefault();const on=$('#wadm').hidden;$('#wadm').hidden=!on;$('#wmsg').textContent=on?'Nhập mật khẩu quản trị rồi bấm Bắt đầu.':WMSG;if(on)setTimeout(()=>$('#wpass').focus(),40)};
+$('#wlogin').onsubmit=e=>{e.preventDefault();const pw=$('#wpass');let who;
+ if(!$('#wadm').hidden&&pw.value){
   if(pw.value!==String(CFG.pin||'2003')){pw.classList.add('bad');$('#wmsg').textContent='Mật khẩu quản trị chưa đúng.';pw.focus();return}
-  pw.value='';pw.classList.remove('bad');$('#wadm').hidden=true;ADMIN_OK=true;try{sessionStorage.setItem('lcpb3d.adm','1')}catch(x){}}
- else ADMIN_OK=false;
- inp.classList.remove('bad');inp.value='';$('#wmsg').textContent=WMSG;
- initAudio();sfx.click();login(v);$('#welcome').hidden=true;bump();const n=doneCount();
- toast(n>=4?'Bạn đã hoàn thành cả 4 chủ đề rồi. Cảm ơn bạn!':n?`Chào bạn! Bạn đã hoàn thành ${n}/4 chủ đề, mời chọn chủ đề còn lại.`:'Kéo màn hình để nhìn quanh 360° và chọn 1 trong 4 chủ đề',3600)};
-$('#wemail').addEventListener('input',()=>{$('#wemail').classList.remove('bad');if($('#wemail').value.trim().toLowerCase()!==ADMIN){$('#wadm').hidden=true;$('#wpass').value=''}});
+  pw.value='';pw.classList.remove('bad');$('#wadm').hidden=true;ADMIN_OK=true;try{sessionStorage.setItem('lcpb3d.adm','1')}catch(x){}who=ADMIN}
+ else{$('#wadm').hidden=true;pw.value='';const c=store.get('cur',null);who=c&&PLAYERS[c]&&c!==ADMIN?c:newGuest()}
+ $('#wmsg').textContent=WMSG;
+ initAudio();sfx.click();login(who);$('#welcome').hidden=true;bump();const n=doneCount();
+ toast(isAdmin()?'Đã vào chế độ quản trị — bấm ⚙ Quản lý để xem danh sách.':n>=4?'Lượt này đã hoàn thành cả 4 chủ đề. Bấm “Kết thúc lượt” để nhường khách sau.':n?`Bạn đã hoàn thành ${n}/4 chủ đề, mời chọn chủ đề còn lại.`:'Kéo màn hình để nhìn quanh 360° và chọn 1 trong 4 chủ đề',3600)};
 $('#wpass').addEventListener('input',()=>$('#wpass').classList.remove('bad'));
 // quản lý
 $('#staffb').onclick=()=>{if(!isAdmin())return;open('staff');$('#slock').hidden=true;$('#sform').hidden=false;fillStaff()};
