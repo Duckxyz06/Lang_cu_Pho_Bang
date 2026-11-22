@@ -121,6 +121,16 @@ body.walking #footacts{display:flex}body.inquiz #footacts,body.inquiz #joy{displ
  #qcard{padding:12px;max-height:calc(100vh - 110px)}#quiz{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 20px)}.credit{font-size:9px;bottom:calc(env(safe-area-inset-bottom,0px) + 3px);left:8px;text-align:center}
  #welcome .steps{grid-template-columns:1fr}
 }
+.login{margin:10px auto 0;max-width:460px;text-align:left}.login label{display:block;font-size:13px;margin-bottom:6px;opacity:.9}
+.lrow{display:flex;gap:8px}.lrow input{flex:1;min-width:0;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.35);border-radius:999px;color:#fff;padding:10px 16px;font:inherit;font-size:15px;outline:none}
+.lrow input:focus{border-color:var(--gold)}.lrow input.bad{border-color:#ff8a80}.login .note{margin-top:6px}
+#pchip{position:fixed;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);z-index:12;display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;font-size:12px;max-width:calc(100vw - 24px)}
+#pchip b{max-width:180px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}#pchip #pprog{background:rgba(242,194,26,.25);border-radius:999px;padding:2px 8px;font-weight:700}#pchip button{padding:4px 10px;font-size:12px}
+body.inquiz #pchip{display:none}
+.hs.done .card{background:rgba(31,164,90,.88);border-color:#bff5d4}.hs.done small{opacity:1}
+#themes button.done{background:rgba(31,164,90,.55)}#themes button.done::after{content:'✔';margin-left:2px;font-weight:800}
+#splayers table{width:100%;border-collapse:collapse;font-size:12px}#splayers td{padding:3px 5px;border-bottom:1px solid rgba(255,255,255,.1);vertical-align:top}
+@media (max-width:760px),(max-height:560px){#pchip{top:calc(env(safe-area-inset-top,0px) + 44px);right:6px;font-size:11px}#pchip b{max-width:120px}}
 /* điện thoại: nền đặc thay cho làm mờ (blur trên khung 3D rất nặng với máy yếu) */
 @media (max-width:760px),(max-height:560px){#qcard,.modal>.glass,#themes,#focusbar{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(14,34,70,.95)}}
 /* ===== Điện thoại XOAY DỌC ===== */
@@ -214,8 +224,13 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
     <div><b>3</b>Trả lời câu hỏi A, B, C, D. Đúng là có quà!</div>
   </div>
   <div class="gifts" id="wgifts"></div>
-  <div class="acts" style="justify-content:center"><button id="wgo" class="big primary">Bắt đầu tham quan ▶</button></div>
+  <form id="wlogin" class="login" autocomplete="on" novalidate>
+    <label for="wemail">Đăng nhập bằng email để chơi — mỗi chủ đề chỉ chơi 1 lần</label>
+    <div class="lrow"><input id="wemail" type="email" inputmode="email" autocomplete="email" placeholder="ten@gmail.com" maxlength="120"><button id="wgo" class="big primary" type="submit">Bắt đầu ▶</button></div>
+    <div class="note" id="wmsg">Email chỉ dùng để ghi nhận lượt chơi và quà, lưu trên thiết bị này.</div>
+  </form>
 </div></div>
+<div id="pchip" class="glass" hidden><span>👤 <b id="pmail"></b></span><span id="pprog"></span><button id="pout" title="Đăng xuất">Đăng xuất</button></div>
 
 <div id="result" class="modal" hidden><div class="glass" id="rbody"></div></div>
 
@@ -227,6 +242,7 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
     <li>Ảnh 360° chụp thực tế tại điểm đó hiện ra, kèm một câu hỏi rút ngẫu nhiên từ bộ 20 câu của chủ đề.</li>
     <li><b>🚶 Khám phá:</b> điều khiển nhân vật đi tham quan bằng W A S D / phím mũi tên hoặc joystick (điện thoại), Shift hoặc nút Chạy, Space nhảy, C ngồi, bấm nền đất để đi tới đó. Đi tới gần Lăng mộ, Hồ sen (đầu cầu), Nhà sàn hoặc Nghi Môn sẽ hiện nút chọn chủ đề.</li>
     <li>Chọn A, B, C hoặc D. Nếu khó, bấm <b>💡 Gợi ý</b> để bỏ bớt 2 đáp án. Trả lời sai vẫn còn lượt thử câu khác.</li>
+    <li><b>Đăng nhập bằng email</b> trước khi chơi. Mỗi email chơi mỗi chủ đề 1 lần: trả lời xong chủ đề nào thì chủ đề đó được khóa (dấu ✔). Bấm <b>Người tiếp theo</b> để đăng xuất cho khách sau.</li>
     <li>Trả lời đúng: màn hình hiện <b>phần quà và mã nhận quà</b>. Đưa mã cho ban tổ chức để nhận quà.</li>
   </ol>
   <div class="note">Phím tắt: ← → xoay · Enter chọn chủ đề · 1–4 hoặc A–D trả lời · Esc quay lại.</div>
@@ -268,6 +284,9 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
     <div id="sgifts"></div>
     <label>Thống kê trên máy này</label>
     <table id="sstats"></table>
+    <label>Người chơi đã đăng nhập trên máy này (<span id="spn">0</span>)</label>
+    <div id="splayers" style="max-height:210px;overflow:auto"></div>
+    <div class="acts"><button id="scsv">⬇ Xuất danh sách (CSV)</button><button id="sclrp">Xóa dữ liệu người chơi</button></div>
     <div class="acts"><button id="ssave" class="primary big">Lưu</button><button id="sreset">Đặt lại thống kê</button><button id="sreq">Đặt lại vòng câu hỏi</button></div>
     <div class="note">Dữ liệu lưu trên trình duyệt của máy này. Mã PIN mặc định: 2003.</div>
   </div>
@@ -752,7 +771,10 @@ function chooseFocus(k){bump();sfx.click();if(walk){startTheme(k);return}turnTo(
 const fade=async(on)=>{$('#fade').classList.toggle('on',on);await sleep(460)};
 function pickQ(k){let used=store.get('used.'+k,[]);const n=THEMES[k].qs.length;let pool=[...Array(n).keys()].filter(i=>!used.includes(i)&&!(cur&&cur.seen.includes(i)));
  if(!pool.length){used=[];pool=[...Array(n).keys()].filter(i=>!(cur&&cur.seen.includes(i)))}const i=pool[Math.floor(Math.random()*pool.length)];used.push(i);store.set('used.'+k,used);return i}
-async function startTheme(k){if(mode!=='explore')return;mode='busy';$('#focusbar').hidden=true;
+async function startTheme(k){if(mode!=='explore')return;
+ if(!ME){toast('Vui lòng đăng nhập bằng email trước khi chơi');showLogin();return}
+ if(isDone(k)){sfx.bad();toast(`Bạn đã hoàn thành chủ đề “${THEMES[k].name}”. Mời chọn chủ đề khác!`);return}
+ mode='busy';$('#focusbar').hidden=true;
  Object.assign(exploreView,{yaw:view.yaw,pitch:view.pitch,fov:view.fov});
  await fade(true);
  cur={k,tries:0,seen:[],q:null};
@@ -785,16 +807,22 @@ $('#qnext').onclick=()=>{sfx.click();newQuestion()};
 $('#qback').onclick=()=>{sfx.click();backToExplore()};
 function drawGift(){const pool=CFG.gifts.filter(g=>g.on&&g.stock>0);const tot=pool.reduce((s,g)=>s+g.stock,0);if(!tot)return null;let r=Math.random()*tot;for(const g of pool){r-=g.stock;if(r<0)return g}return pool.at(-1)}
 function showResult(ok,exp){const intro=`<p class="intro">Trò chơi do <b>${esc(CFG.group)}</b> – <b>Trường Đại học Đồng Tháp</b> thực hiện, ứng dụng mô hình 3D và ảnh 360° để giới thiệu di sản Khu di tích Nguyễn Sinh Sắc. Trường ở số 783 Phạm Hữu Lầu – ngay trên con đường bạn đang đứng! Tìm hiểu thêm: <b>dthu.edu.vn</b></p>`;
- let h;
+ let h;const rec={ok,at:Date.now()};
  if(ok){const g=drawGift();
-  if(g){g.stock--;ST.code++;ST.given[g.id]=(ST.given[g.id]||0)+1;store.set('cfg',CFG);saveStats();const code='DT-'+String(ST.code).padStart(4,'0');
+  if(g){g.stock--;ST.code++;ST.given[g.id]=(ST.given[g.id]||0)+1;store.set('cfg',CFG);saveStats();const code='DT-'+String(ST.code).padStart(4,'0');rec.gift=g.name;rec.code=code;
    h=`<div class="head">🎉 Chính xác!</div><div class="know"><b>Bạn có biết?</b> ${esc(exp)}</div>
    <div class="giftcard"><span class="gi">${g.icon}</span><div style="flex:1"><small>Phần quà của bạn</small><b>${esc(g.name)}</b><small>Mã nhận quà: <code>${code}</code> — đưa mã này cho ban tổ chức</small></div><img src="${LOGO}" alt=""></div>`;
    setTimeout(()=>{sfx.gift();confetti()},150)}
   else{h=`<div class="head">🎉 Chính xác!</div><div class="know"><b>Bạn có biết?</b> ${esc(exp)}</div><div class="know" style="text-align:center">Quà tặng đợt này đã được trao hết. Cảm ơn bạn rất nhiều! Mời bạn ghé quầy DThU để giao lưu cùng nhóm nghiên cứu.</div>`;setTimeout(confetti,150)}}
  else h=`<div class="head">💙 Cảm ơn bạn đã tham gia!</div><div class="know"><b>Bạn có biết?</b> ${esc(exp)}</div><div style="opacity:.85">Câu hỏi khó một chút thôi — lần sau bạn chắc chắn trả lời được!</div>`;
- $('#rbody').innerHTML=h+intro+`<div class="acts" style="justify-content:center"><button id="rnext" class="big primary">Người tiếp theo ▶</button></div>`;
- $('#result').hidden=false;$('#rnext').onclick=()=>{$('#result').hidden=true;backToExplore(true)}}
+ if(ME&&cur){PLAYERS[ME].themes[cur.k]=rec;savePlayers();refreshLocks()}
+ const left=KEYS.filter(k=>!isDone(k));
+ const lock=ME?`<div class="note" style="margin:6px 0 0">🔒 Chủ đề “${esc(THEMES[cur.k].name)}” đã được khóa với <b>${esc(ME)}</b> · đã chơi ${4-left.length}/4 chủ đề.</div>`:'';
+ const all=left.length?'':'<div class="know" style="text-align:center">🎊 Bạn đã hoàn thành cả 4 chủ đề. Cảm ơn bạn đã đồng hành cùng DThU!</div>';
+ $('#rbody').innerHTML=h+all+lock+intro+`<div class="acts" style="justify-content:center">${left.length?`<button id="rmore" class="big primary">Chơi tiếp: còn ${left.length} chủ đề ▶</button>`:''}<button id="rnext" class="big${left.length?'':' primary'}">Người tiếp theo (đăng xuất)</button></div>`;
+ $('#result').hidden=false;
+ const m=$('#rmore');if(m)m.onclick=()=>{$('#result').hidden=true;backToExplore(false).then(()=>toast('Mời bạn chọn chủ đề còn lại (chủ đề đã chơi có dấu ✔)'))};
+ $('#rnext').onclick=()=>{$('#result').hidden=true;logout();if(walk)setWalk(false);backToExplore(true).then(showLogin)}}
 async function backToExplore(next){if(mode==='busy')return;mode='busy';await fade(true);$('#quiz').hidden=true;$('#labels').hidden=$('#cross').hidden=$('#themes').hidden=$('#hint').hidden=false;
  Object.assign(view,exploreView);cur=null;answered=false;mode='explore';bump();await fade(false);if(next)toast('Mời bạn tiếp theo kéo màn hình để nhìn quanh và chọn chủ đề!')}
 const saveStats=()=>store.set('stats',ST);
@@ -810,19 +838,48 @@ $$('[data-close]').forEach(b=>b.onclick=()=>b.closest('.modal').hidden=true);
 $$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m&&m.id!=='welcome'&&m.id!=='result')m.hidden=true}));
 $('#helpb').onclick=()=>open('help');$('#siteb').onclick=()=>open('site');$('#aboutb').onclick=()=>open('about');
 $('#fsb').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+/* ---------- ĐĂNG NHẬP EMAIL + KHÓA CHỦ ĐỀ ĐÃ CHƠI ----------
+   Trang tĩnh (GitHub Pages) không có máy chủ: tiến độ từng email lưu trên trình duyệt của thiết bị này.
+   Chơi xong (đã trả lời) chủ đề nào thì chủ đề đó bị khóa với email đó. */
+const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+let PLAYERS=store.get('players',{}),ME=null;
+try{const s=sessionStorage.getItem('lcpb3d.me');if(s&&PLAYERS[s])ME=s}catch(e){}
+const savePlayers=()=>store.set('players',PLAYERS);
+const isDone=k=>!!(ME&&PLAYERS[ME]&&PLAYERS[ME].themes&&PLAYERS[ME].themes[k]);
+const doneCount=()=>KEYS.filter(isDone).length;
+function login(e){ME=e.toLowerCase().trim();if(!PLAYERS[ME])PLAYERS[ME]={t:Date.now(),themes:{}};PLAYERS[ME].last=Date.now();savePlayers();try{sessionStorage.setItem('lcpb3d.me',ME)}catch(x){}refreshLocks()}
+function logout(){ME=null;try{sessionStorage.removeItem('lcpb3d.me')}catch(x){}refreshLocks()}
+function refreshLocks(){
+ $('#pchip').hidden=!ME;if(ME){$('#pmail').textContent=ME;$('#pprog').textContent=doneCount()+'/4 chủ đề'}
+ labels.forEach(l=>{if(!l.k)return;const d=isDone(l.k);l.el.classList.toggle('done',d);l.el.querySelector('small').textContent=d?'✔ Đã hoàn thành':`${THEMES[l.k].qs.length} câu hỏi · bấm để chọn`});
+ $$('#themes button').forEach(b=>b.classList.toggle('done',isDone(b.dataset.k)));focusK=undefined}
+$('#pout').onclick=()=>{sfx.click();logout();if(walk)setWalk(false);$('#welcome').hidden=false;giftLine()};
+function showLogin(){$('#welcome').hidden=false;giftLine();setTimeout(()=>$('#wemail').focus(),60)}
 const giftLine=()=>{$('#wgifts').innerHTML='Quà tặng: '+CFG.gifts.filter(g=>g.on).map(g=>`<span>${g.icon} ${esc(g.name)}</span>`).join('')};
-$('#wgo').onclick=()=>{initAudio();sfx.click();$('#welcome').hidden=true;bump();toast('Kéo màn hình để nhìn quanh 360° và chọn 1 trong 4 chủ đề')};
+$('#wlogin').onsubmit=e=>{e.preventDefault();const inp=$('#wemail'),v=inp.value.trim();
+ if(!EMAIL_RE.test(v)){inp.classList.add('bad');$('#wmsg').textContent='Email chưa đúng định dạng, ví dụ: ten@gmail.com';inp.focus();return}
+ inp.classList.remove('bad');inp.value='';$('#wmsg').textContent='Email chỉ dùng để ghi nhận lượt chơi và quà, lưu trên thiết bị này.';
+ initAudio();sfx.click();login(v);$('#welcome').hidden=true;bump();const n=doneCount();
+ toast(n>=4?'Bạn đã hoàn thành cả 4 chủ đề rồi. Cảm ơn bạn!':n?`Chào bạn! Bạn đã hoàn thành ${n}/4 chủ đề, mời chọn chủ đề còn lại.`:'Kéo màn hình để nhìn quanh 360° và chọn 1 trong 4 chủ đề',3600)};
+$('#wemail').addEventListener('input',()=>$('#wemail').classList.remove('bad'));
 // quản lý
 $('#staffb').onclick=()=>{open('staff');$('#slock').hidden=false;$('#sform').hidden=true;$('#spin').value='';$('#spinmsg').textContent='';setTimeout(()=>$('#spin').focus(),50)};
 const unlock=()=>{if($('#spin').value===String(CFG.pin||'2003')){$('#slock').hidden=true;$('#sform').hidden=false;fillStaff()}else $('#spinmsg').textContent='Mã PIN chưa đúng.'};
 $('#sunlock').onclick=unlock;$('#spin').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
 function fillStaff(){$('#sgroup').value=CFG.group;$('#schance').value=String(CFG.chances);
  $('#sgifts').innerHTML=CFG.gifts.map((g,i)=>`<div class="grow3"><input type="checkbox" data-i="${i}" class="gon" ${g.on?'checked':''} aria-label="Bật quà"><input type="text" class="gname" data-i="${i}" value="${esc(g.name)}"><input type="number" min="0" class="gstock" data-i="${i}" value="${g.stock}" aria-label="Số lượng"></div>`).join('');
+ const rows=Object.entries(PLAYERS).sort((a,b)=>(b[1].last||b[1].t)-(a[1].last||a[1].t));$('#spn').textContent=rows.length;
+ $('#splayers').innerHTML=rows.length?'<table>'+rows.map(([e,d])=>`<tr><td>${esc(e)}</td><td>${KEYS.map(k=>{const x=d.themes[k];return x?`${THEMES[k].name}: ${x.ok?'✔':'✘'}${x.code?' '+x.code:''}`:''}).filter(Boolean).join('<br>')||'—'}</td></tr>`).join('')+'</table>':'<div class="note">Chưa có người chơi.</div>';
  $('#sstats').innerHTML=`<tr><td>Lượt chọn chủ đề</td><td>${ST.plays}</td></tr><tr><td>Câu trả lời đúng / sai</td><td>${ST.correct} / ${ST.wrong}</td></tr>`+CFG.gifts.map(g=>`<tr><td>Đã trao: ${esc(g.name)}</td><td>${ST.given[g.id]||0}</td></tr>`).join('')+`<tr><td>Mã nhận quà gần nhất</td><td>${ST.code?'DT-'+String(ST.code).padStart(4,'0'):'—'}</td></tr>`}
 $('#ssave').onclick=()=>{CFG.group=$('#sgroup').value.trim()||DEF.group;CFG.chances=+$('#schance').value;
  $$('.gon').forEach(c=>CFG.gifts[c.dataset.i].on=c.checked);$$('.gname').forEach(c=>CFG.gifts[c.dataset.i].name=c.value.trim()||CFG.gifts[c.dataset.i].name);$$('.gstock').forEach(c=>CFG.gifts[c.dataset.i].stock=Math.max(0,parseInt(c.value)||0));
  store.set('cfg',CFG);applyGroup();giftLine();fillStaff();toast('Đã lưu cài đặt')};
 $('#sreset').onclick=()=>{if(confirm('Đặt lại toàn bộ thống kê và số mã nhận quà về 0?')){ST={plays:0,correct:0,wrong:0,code:0,given:{}};saveStats();fillStaff()}};
+$('#scsv').onclick=()=>{const L=[['Email','Chủ đề','Kết quả','Quà','Mã nhận quà','Thời gian']];
+ Object.entries(PLAYERS).forEach(([e,d])=>KEYS.forEach(k=>{const x=d.themes[k];if(x)L.push([e,THEMES[k].name,x.ok?'Đúng':'Sai',x.gift||'',x.code||'',new Date(x.at).toLocaleString('vi-VN')])}));
+ const csv='\ufeff'+L.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='nguoi-choi-lang-cu-pho-bang.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+$('#sclrp').onclick=()=>{if(confirm('Xóa toàn bộ danh sách người chơi và trạng thái khóa chủ đề trên máy này? Không thể hoàn tác.')){PLAYERS={};savePlayers();logout();fillStaff()}};
 $('#sreq').onclick=()=>{KEYS.forEach(k=>store.set('used.'+k,[]));toast('Đã đặt lại vòng câu hỏi')};
 
 /* ===================== KHÁM PHÁ (ĐI BỘ) — điều khiển giống dthu-3d.html =====================
@@ -951,7 +1008,7 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
  if(walk&&mode==='explore')stepWalk(dt);
  if(mode==='explore'&&!walk&&!drag&&!anim&&idle>20000&&!anyModal)view.yaw+=dt*.07;
  if(mode!=='explore'&&!drag&&!anim&&idle>12000&&!anyModal)view.yaw+=dt*.05;
- if(idle>150000&&mode!=='busy'&&$('#welcome').hidden){$('#result').hidden=true;$$('.modal').forEach(m=>m.hidden=true);if(mode==='quiz')backToExplore();if(walk)setWalk(false);$('#welcome').hidden=false;giftLine();bump()}
+ if(idle>150000&&mode!=='busy'&&$('#welcome').hidden){$('#result').hidden=true;$$('.modal').forEach(m=>m.hidden=true);if(mode==='quiz')backToExplore();if(walk)setWalk(false);logout();$('#welcome').hidden=false;giftLine();bump()}
  camera.rotation.set(view.pitch,view.yaw,0);camera.fov=view.fov;camera.updateProjectionMatrix();
  if(mode==='explore'||mode==='busy'&&!cur){
   (window._flags||[]).forEach(f=>{f.rotation.y=Math.PI/2+Math.sin(now*.003+f.userData.ph)*.35});
@@ -968,7 +1025,7 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
    placed.push({x:l._x,y,w,h});l.el.style.transform=`translate(${l._x}px,${y}px) translate(-50%,-100%)`});
   const nf=mode!=='explore'?null:walk?nearTheme():bd<THREE.MathUtils.degToRad(13)?best:null;
   if(nf!==focusK){focusK=nf;labels.forEach(l=>l.el.classList.toggle('focus',l.k===focusK));$$('#themes button').forEach(b=>b.classList.toggle('on',b.dataset.k===focusK));
-   $('#focusbar').hidden=!focusK;if(focusK){$('#fname').innerHTML=`${walk?'Bạn đang ở gần ':''}<b>${THEMES[focusK].name}</b> · ${THEMES[focusK].qs.length} câu hỏi`;sfx.click()}}
+   $('#focusbar').hidden=!focusK;if(focusK){const d=isDone(focusK);$('#fname').innerHTML=`${walk?'Bạn đang ở gần ':''}<b>${THEMES[focusK].name}</b> · ${d?'✔ đã hoàn thành':THEMES[focusK].qs.length+' câu hỏi'}`;$('#fgo').disabled=d;$('#fgo').textContent=d?'🔒 Đã khóa':'Chọn chủ đề này ▶';sfx.click()}}
  }else{const key=view.yaw.toFixed(4)+','+view.pitch.toFixed(4)+','+view.fov.toFixed(2)+','+(panoBox.material[0]&&panoBox.material[0].id)+','+innerWidth+'x'+innerHeight;
   if(key!==frame.pk){frame.pk=key;panoBox.position.copy(camera.position);renderer.render(panoScene,camera)}}   // ảnh 360° đứng yên thì không vẽ lại → nhẹ máy
  stepConfetti()}
@@ -976,7 +1033,7 @@ $('#fgo').onclick=()=>{if(focusK){initAudio();startTheme(focusK)}};
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 document.fonts&&document.fonts.ready.then(()=>{});
 requestAnimationFrame(frame);
-setTimeout(()=>{$('#loader').classList.add('done');giftLine();$('#welcome').hidden=false},400);
+setTimeout(()=>{$('#loader').classList.add('done');giftLine();refreshLocks();if(!ME)$('#welcome').hidden=false},400);
 setTimeout(()=>{let i=0;const next=()=>{if(i<KEYS.length)loadNode(THEMES[KEYS[i++]].views[0].n).catch(()=>{}).then(()=>setTimeout(next,300))};next()},4000);
 window.__lcpb={THEMES,view,camera,startTheme,showView,backToExplore,loadNode,panoBox,tick:(n=60)=>{let t=performance.now();for(let i=0;i<n;i++){t+=16;last=t-16;frame(t)}}};
 </script>
