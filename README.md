@@ -12,6 +12,7 @@ Mô hình 3D và trò chơi đố vui giới thiệu Khu di tích Nguyễn Sinh 
 - Nút **⚙ Quản lý** (PIN mặc định `2003`): tên nhóm nghiên cứu, số lượng quà, số lượt thử, thống kê.
 
 ## Ghi chú
-- Toàn bộ trò chơi nằm trong một tệp `index.html` (ảnh, nhân vật nhúng sẵn); cần Internet để tải thư viện three.js và phông chữ.
+- `index.html` là trang chính (~160 KB); ảnh 360° (`assets/pano/`) tải khi chọn chủ đề, nhân vật (`assets/nhanvat.glb`) tải nền. Cần Internet để tải thư viện three.js và phông chữ.
+- Giao diện tự điều chỉnh cho máy tính, điện thoại xoay dọc và xoay ngang.
 - Ảnh 360°: 360VR.com.vn · Phu Digital. Dữ kiện di tích: Cổng thông tin Du lịch Đồng Tháp, Sở VHTTDL Đồng Tháp.
 - Mô hình là dựng hình minh họa theo sơ đồ, không phải bản vẽ kỹ thuật.
