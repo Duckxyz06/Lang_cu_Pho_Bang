@@ -261,8 +261,8 @@ setTimeout(()=>{const l=document.getElementById('loader');if(l&&!l.classList.con
   <div class="gifts" id="wgifts"></div>
   <form id="wlogin" class="login" autocomplete="on" novalidate>
     <div class="acts" style="justify-content:center;margin-top:4px"><button id="wgo" class="big primary" type="submit" style="font-size:18px;padding:12px 34px">Bắt đầu ▶</button></div>
-    <div class="lrow" id="wadm" hidden style="margin-top:10px"><input id="wpass" type="password" autocomplete="current-password" placeholder="Mật khẩu quản trị (admindthu@gmail.com)"></div>
-    <div class="note" id="wmsg" style="text-align:center">Mỗi chủ đề chơi 1 lần. Hệ thống tự ghi nhận lượt chơi (mã máy, IP) để trao quà.</div>
+    <div class="lrow" id="wadm" hidden style="margin-top:10px"><input id="wpass" type="password" autocomplete="current-password" placeholder="Mật khẩu quản trị"></div>
+    <div class="note" id="wmsg" style="text-align:center"></div>
     <div style="text-align:center;margin-top:4px"><a href="#" id="wadmin" class="note" style="color:#8fc1ff">🔒 Quản trị</a></div>
   </form>
 </div></div>
@@ -921,7 +921,7 @@ function refreshLocks(){labels.forEach(l=>l.w=0);frame.ek=null;
 $('#pout').onclick=()=>{sfx.click();logout();if(walk)setWalk(false);$('#welcome').hidden=false;giftLine()};
 function showLogin(){$('#welcome').hidden=false;giftLine();$('#wadm').hidden=true;$('#wpass').value='';setTimeout(()=>$('#wgo').focus(),60)}
 const giftLine=()=>{$('#wgifts').innerHTML='Quà tặng: '+CFG.gifts.filter(g=>g.on).map(g=>`<span>${g.icon} ${esc(g.name)}</span>`).join('')};
-const WMSG='Mỗi chủ đề chơi 1 lần. Hệ thống tự ghi nhận lượt chơi (mã máy, IP) để trao quà.';
+const WMSG='';
 $('#wadmin').onclick=e=>{e.preventDefault();const on=$('#wadm').hidden;$('#wadm').hidden=!on;$('#wmsg').textContent=on?'Nhập mật khẩu quản trị rồi bấm Bắt đầu.':WMSG;if(on)setTimeout(()=>$('#wpass').focus(),40)};
 $('#wlogin').onsubmit=e=>{e.preventDefault();const pw=$('#wpass');let who;
  if(!$('#wadm').hidden&&pw.value){
