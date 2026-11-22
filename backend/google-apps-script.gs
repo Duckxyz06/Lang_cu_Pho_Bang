@@ -10,13 +10,14 @@
  *  5. Triển khai › Tùy chọn triển khai mới › Loại: Ứng dụng web
  *       Thực thi dưới dạng: Tôi · Người có quyền truy cập: Bất kỳ ai › Triển khai.
  *     Sao chép "URL ứng dụng web" (…/exec).
- *  6. Gắn URL vào trang web (dòng const SYNC_URL='' trong index.html), hoặc đăng nhập admindthu@gmail.com
- *     › ⚙ Quản lý › dán URL và KEY › Lưu › "Tải dữ liệu mọi máy".
+ *  6. Gắn URL vào trang web (dòng const SYNC_URL='' trong index.html). Admin: ở màn chào bấm 🔒 Quản trị › mật khẩu ›
+ *     Bắt đầu › ⚙ Quản lý › nhập KEY vào ô "Khóa đọc dữ liệu" › Lưu › "Tải dữ liệu mọi máy".
+ *  Đã có sheet cũ (cột Email): chạy lại caiDat để đổi tiêu đề thành "Người chơi" — dữ liệu cũ giữ nguyên.
  *  Mỗi lần sửa mã: Triển khai › Quản lý các bản triển khai › Chỉnh sửa › Phiên bản mới › Triển khai (URL giữ nguyên).
  */
 const KEY = 'doi-chuoi-bi-mat-nay';
 const SHEET = 'Ket qua';
-const HEAD = ['Thời gian', 'Email', 'Chủ đề', 'Kết quả', 'Quà', 'Mã nhận quà', 'Mã máy', 'Tên máy', 'IP'];
+const HEAD = ['Thời gian', 'Người chơi', 'Chủ đề', 'Kết quả', 'Quà', 'Mã nhận quà', 'Mã máy', 'Tên máy', 'IP'];
 const WIDTH = [190, 270, 130, 105, 240, 145, 115, 330, 145];
 const FONT = 'Times New Roman';
 const SIZE = 14;
@@ -82,7 +83,7 @@ function doPost(e) {
   }
 }
 
-// dòng cuối có email ở cột B (bỏ qua các dòng chỉ có định dạng)
+// dòng cuối có người chơi ở cột B (bỏ qua các dòng chỉ có định dạng)
 function lastDataRow_(sh) {
   const n = sh.getLastRow();
   if (n < 2) return 1;
